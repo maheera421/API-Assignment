@@ -1,6 +1,7 @@
 $(function(){
     getRecipies();
     $("#recipes").on("click", ".btn-danger", deleteRecipies);
+    $("#addBtn").click(postRecipie);
 })
 
 function getRecipies() {
@@ -35,6 +36,23 @@ function getRecipies() {
       method: "DELETE",
       success: function () {
         getRecipies();
+      },
+    });
+  }
+
+  function postRecipie() {
+    var title = $("#title").val();
+    var body = $("#body").val();
+    $.ajax({
+      url: "https://usman-fake-api.herokuapp.com/api/recipes",
+      method: "POST",
+      data: { title, body },
+      success: function (response) {
+        console.log(response);
+        $("#title").val("");
+        $("#body").val("");
+        getRecipies();
+        $("#addModal").modal("hide");
       },
     });
   }
