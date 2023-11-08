@@ -2,7 +2,10 @@ $(function(){
     getRecipies();
     $("#recipes").on("click", ".btn-danger", deleteRecipies);
     $("#addBtn").click(postRecipie);
+    $("#updateSave").click(putRecipie);
+    $("#recipes").on("click", ".btn-warning", handleUpdate);
 })
+
 
 function getRecipies() {
     $.ajax({
@@ -26,6 +29,7 @@ function getRecipies() {
     });
   }
 
+
   function deleteRecipies() {
     var btn = $(this);
     var parentDiv = btn.closest(".recipe");
@@ -39,6 +43,7 @@ function getRecipies() {
       },
     });
   }
+
 
   function postRecipie() {
     var title = $("#title").val();
@@ -55,4 +60,36 @@ function getRecipies() {
         $("#addModal").modal("hide");
       },
     });
+  }
+
+
+  function putRecipie() {
+    var id = $("#updateId").val();
+    var title = $("#updateTitle").val();
+    var body = $("#updateBody").val();
+    $.ajax({
+      url: "https://usman-fake-api.herokuapp.com/api/recipes/" + id,
+      data: { title, body },
+      method: "PUT",
+      success: function (response) {
+        console.log(response);
+        getRecipies();
+        $("#updateModal").modal("hide");
+      },
+    });
+  }
+
+  function handleUpdate() {
+    var btn = $(this);
+    var parentDiv = btn.closest(".recipe");
+    let id = parentDiv.attr("data-id");
+    $.get(
+      "https://usman-fake-api.herokuapp.com/api/recipes/" + id,
+      function (response) {
+        $("#updateId").val(response._id);
+        $("#updateTitle").val(response.title);
+        $("#updateBody").val(response.body);
+        $("#updateModal").modal("show");
+      }
+    );
   }
